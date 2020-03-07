@@ -18,11 +18,7 @@ def driver = new org.openqa.selenium.chrome.ChromeDriver()
 // def driver = new org.openqa.selenium.firefox.FirefoxDriver()
 
 try {
-
-
     def wait = new WebDriverWait(driver, 60)
-
-
     driver.manage().window().maximize()
 
     driver.get(args[0])
@@ -54,7 +50,7 @@ try {
         sleep 500
         activeInput.sendKeys(org.openqa.selenium.Keys.ENTER)
 
-        text = activeInput.getAttribute("value").trim()
+        text = activeInput.getAttribute("value").replaceAll(/(_[0-9]*)?\ .*/, '').trim()
 
         sleep(2000)
 
@@ -63,7 +59,7 @@ try {
 
         def tasks = taskSelectWrap.getOptions()
             .findAll { it.getAttribute('disabled') != 'true' && !it.getAttribute('title').empty }
-            .collect { it.getAttribute('title').trim().replaceAll('\\u00a0', '') }
+            .collect { it.getAttribute('title').replaceAll('\\u00a0', '').replaceAll(/^([0-9]+\.?)*/, '').replaceAll(/\(.*/, '').trim() }
         
         if (!text.empty) {
             taskConfig[text] = tasks
@@ -71,6 +67,15 @@ try {
     } while (text != '')
 
     config['tasks'] = taskConfig
+
+    def activitySelect = driver.findElement(By.cssSelector("select[name=taetigkeit]"))
+    def activitySelectWrap = new org.openqa.selenium.support.ui.Select(activitySelect);
+
+    def activities = activitySelectWrap.getOptions()
+      .findAll { !it.getAttribute('selected') }
+      .collect { it.getAttribute('title') }
+
+    config['activities'] = activities
 
     new File('config.json').withWriter { writer->
         writer.writeLine groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(config))
