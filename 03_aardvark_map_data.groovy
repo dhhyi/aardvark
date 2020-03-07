@@ -12,28 +12,32 @@ def report = parseCsv(new File('report.csv').text, separator: ';', readFirstLine
         duration.minutes = 15
     }
 
-    def rule = rules.find { data[1] =~ it.key }
+    def rule = rules.find { data[1] =~ it.match }
 
     if (!rule) {
         println 'did not find mapping for "' + data[1] + '"'
-        System.exit 1
+        return
     }
 
-    def groupEntry = config.tasks.find { it.key =~ rule.value.group }
+    def groupEntry = config.tasks.find { it.key =~ rule.group }
     def task
     if (groupEntry) {
-        task = groupEntry.value.find { it =~ rule.value.task }
+        task = groupEntry.value.find { it =~ rule.task }
     }
 
     if (!task || !groupEntry) {
         println 'did not find mapping for rule: '
         println groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(rule))
-        System.exit 1
+        return
     }
 
-    return [data[0], duration.format('HH:mm'), rule.value.group, rule.value.task, rule.value.activity, rule.value.comment]
-}.collect { it.join(';') }.join('\n')
+    return [data[0], duration.format('HH:mm'), rule.group, rule.task, rule.activity, rule.comment]
+}
+
+if (!report.findAll({ el -> el == null }).empty) {
+    System.exit 1
+}
 
 new File('report.csv').withWriter { writer ->
-    writer.writeLine report
+    writer.writeLine report.collect { it.join(';') }.join('\n')
 }
