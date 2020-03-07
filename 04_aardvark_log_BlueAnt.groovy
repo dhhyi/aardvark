@@ -51,7 +51,7 @@ try {
 
         // DURATION
         def duration = driver.findElement(By.cssSelector("input[name=dauer]"))
-        duration.sendKeys(data[1])
+        duration.sendKeys(data[2])
         sleep 500
         duration.sendKeys(org.openqa.selenium.Keys.TAB)
 
@@ -60,7 +60,7 @@ try {
         do {
             activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN)
             sleep 200
-        } while (!(activeInput.getAttribute("value") =~ data[2]))
+        } while (!(activeInput.getAttribute("value") =~ data[3]))
         activeInput.sendKeys(org.openqa.selenium.Keys.ENTER)
         sleep 500
         activeInput.sendKeys(org.openqa.selenium.Keys.TAB)
@@ -71,7 +71,7 @@ try {
         do {
             activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN)
             sleep 200
-        } while (!(activeInput.getAttribute("value") =~ data[3]))
+        } while (!(activeInput.getAttribute("value") =~ data[4]))
         activeInput.sendKeys(org.openqa.selenium.Keys.ENTER)
         sleep 500
 
@@ -86,13 +86,13 @@ try {
         do {
             activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN)
             sleep 200
-        } while (!(activeInput.getAttribute("value") =~ data[4]))
+        } while (!(activeInput.getAttribute("value") =~ data[5]))
         activeInput.sendKeys(org.openqa.selenium.Keys.TAB)
         sleep 500
 
         // COMMENT
         activeInput = driver.switchTo().activeElement()
-        activeInput.sendKeys data[5]
+        activeInput.sendKeys data[6]
         sleep 500
 
         driver.findElement(By.cssSelector("button[name=speichern]")).click()
