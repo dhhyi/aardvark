@@ -23,30 +23,24 @@ new SwingBuilder().edt {
           rulesTable.model.fireTableDataChanged()
         })
         menuItem(text: 'Save Rules', actionPerformed: {
-
           new File('rules.json').withWriter { writer->
-              writer.writeLine groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(rules))
+            writer.writeLine groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(rules))
           }
         })
       }
       menuItem(text: 'Generate Report', actionPerformed: { 
         tabs.selectedIndex = 1
         try {
-          output.text = tools.generateReport(rules, config).join '\n'
+          def report = tools.generateReport(rules, config).collect { it.join ';' }.join '\n'
+          output.text = report
         } catch (err) {
           output.text= err.message
         }
       })
       menuItem(text: 'Write Report', actionPerformed: { 
         tabs.selectedIndex = 1
-        try {
-          def report = tools.generateReport(rules, config).collect { it.join ';' }.join '\n'
-          output.text = report
-          new File('report.csv').withWriter { writer ->
-              writer.writeLine report
-          }
-        } catch (err) {
-          output.text= err.message
+        new File('report.csv').withWriter { writer ->
+          writer.writeLine output.text
         }
       })
     }  
@@ -113,7 +107,7 @@ new SwingBuilder().edt {
 
       panel(name: 'Output') {
         borderLayout()
-        textArea(id: 'output', editable: false, alignmentY: SwingConstants.TOP)
+        textArea(id: 'output', editable: true, alignmentY: SwingConstants.TOP)
       }
     }
   }
