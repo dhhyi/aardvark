@@ -3,11 +3,11 @@ import groovy.beans.Bindable
 import javax.swing.*
 import static java.awt.EventQueue.invokeLater
 
-def rules = new groovy.json.JsonSlurper().parseText(new File('rules.json').text)
+def rules = new File('rules.json').exists() ? new groovy.json.JsonSlurper().parseText(new File('rules.json').text) : []
 def config = new groovy.json.JsonSlurper().parseText(new File('config.json').text)
 
 GroovyShell shell = new GroovyShell()
-def tools = shell.parse(new File('03_aardvark_map_data.groovy'))
+def tools = shell.parse(new File('map_data.groovy'))
 
 new SwingBuilder().edt {
   frame(title: 'Java Frame', size: [1000, 600], locationRelativeTo: null, show: true, defaultCloseOperation: WindowConstants.EXIT_ON_CLOSE) {
