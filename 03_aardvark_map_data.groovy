@@ -26,7 +26,9 @@ def generateReport(rules, config) {
             throw new Exception('did not find mapping for rule: ' + groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(rule)))
         }
 
-        return [data[0], data[1], duration.format('HH:mm'), rule.group, rule.task, rule.activity, rule.comment]
+        def comment = rule.comment.contains('$') ? data[1].replaceAll(rule.match, rule.comment) : rule.comment
+
+        return [data[0], data[1], duration.format('HH:mm'), rule.group, rule.task, rule.activity, comment]
     }
 }
 
