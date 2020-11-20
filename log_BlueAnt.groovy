@@ -83,6 +83,8 @@ try {
         
         // ACTIVITY
         activeInput = driver.switchTo().activeElement()
+        activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN)
+        activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_UP)
         do {
             activeInput.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN)
             sleep 200
